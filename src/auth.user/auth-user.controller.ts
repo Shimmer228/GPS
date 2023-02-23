@@ -33,19 +33,19 @@ export class AuthUserController {
     this.authUserService.deleteOne(id);
     return "a great succes";
   }
-  @Post('signup')
-  signup(@Body() createUserDto: CreateUserDto) {
-    return this.authUserService.signUp(createUserDto);
-  }
-  @Post('signin')
-  signin(@Body() data: AuthDto) {
-    return this.authUserService.signIn(data);
-  }
+  // @Post('signup')
+  // signup(@Body() createUserDto: CreateUserDto) {
+  //   return this.authUserService.signUp(createUserDto);
+  // }
+  // @Post('signin')
+  // signin(@Body() data: AuthDto) {
+  //   return this.authUserService.signIn(data);
+  // }
 
-  @Get('logout')
-  logout(@Req() req: Request) {
-    this.authUserService.logout(req.user['sub']);
-  }
+  // @Get('logout')
+  // logout(@Req() req: Request) {
+  //   this.authUserService.logout(req.user['sub']);
+  // }
   
 }
 

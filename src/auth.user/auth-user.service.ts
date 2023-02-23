@@ -15,7 +15,7 @@ import { AuthDto } from 'src/dto/auth.dto';
 export class AuthUserService {
     constructor
     (
-        private usersService: UserService,
+         private usersService: UserService,
         private jwtService: JwtService,
         private configService: ConfigService,
     ) {}
