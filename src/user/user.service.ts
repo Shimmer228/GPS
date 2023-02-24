@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { AppDataSource } from 'data-source';
-import { AuthUserDto } from 'src/auth.user/auth-user.dto/auth-user.dto';
 import { AuthUsers } from 'src/auth.user/auth-user.entity';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
-import { UserDto } from './user.dto/user.dto';
 import { User } from './user.entity';
 
 
