@@ -23,32 +23,42 @@ export class UserService {
                 .save({
                     authUser:authuser,
                     username:body.username,
+                    email:body.email,
                 })
             console.log(user);
         return user;
-      }
+    }
 
-      async update(
-        id: string,
+    async update(
+        id: number,
         updateUserDto: UpdateUserDto,
-      ): Promise<any> {
-       return await AppDataSource
+                ): Promise<void> {
+        await AppDataSource
         .createQueryBuilder()
         .update(AuthUsers)
-        .set({ refreshToken:updateUserDto.refreshToken })
+        .set({ refreshToken: updateUserDto.refreshToken })
         .where("id = :id", { id: id })
         .execute()
     }
 
     
-   async getOne(ID:number):Promise<User>{
+   async getOne(ID:number):Promise<any>{
         return await AppDataSource
         .getRepository(User)
-        .createQueryBuilder("users")
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.authUser", "authUser")
         .where("user.id = :id", { id: ID })
         .getOne()
     
     }
+    async findByUsername(username: string): Promise<any> {
+        return await AppDataSource
+        .getRepository(User)
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.authUser", "authUser")
+        .where("user.username = :username", { username: username })
+        .getOne()
+      }
     async deleteOne(ID:number):Promise<void>{
        await AppDataSource
         .createQueryBuilder()
@@ -67,13 +77,7 @@ export class UserService {
         .execute()
     }
    
-       async findByUsername(username: string): Promise<any> {
-        return await AppDataSource
-        .getRepository(User)
-        .createQueryBuilder()
-        .where("username = :username", { username: username })
-        .getOne()
-      }
+     
       
 
         // async createOne(body: Auth_User_dto):Promise<any>{

@@ -43,7 +43,7 @@ export class UsersInfo1676286285196 implements MigrationInterface {
                 name: 'role',
                 type: 'varchar',
                 isNullable: false,
-                default: "user"
+                default: "'user'"
               },
               {
                 name: 'avatar',

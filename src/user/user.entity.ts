@@ -22,7 +22,7 @@ export class User {
     @Column()
     country: string 
     
-    @Column()
+    @Column({default: "user"})
     role: string
     
     @Column()
