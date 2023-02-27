@@ -48,6 +48,7 @@ export class AuthUserService {
     }
 
     hashData(data: string) {
+            console.log(data)
             return argon2.hash(data);
     }
 
@@ -59,17 +60,19 @@ export class AuthUserService {
      
       if (!passwordMatches)
         throw new BadRequestException('Password is incorrect');
-      const tokens = await this.getTokens(user._id, user.username);
-      await this.updateRefreshToken(user._id, tokens.refreshToken);
+      const tokens = await this.getTokens(user.id, user.username);
+      await this.updateRefreshToken(user.id, tokens.refreshToken);
       return tokens;
     }
 
     async updateRefreshToken(userId: number, refreshToken: string) {
-        const hashedRefreshToken = await this.hashData(refreshToken);
-        console.log(refreshToken)
+        const hashedRefreshToken = await this.hashData(refreshToken)
+        console.log(await this.getOne(userId))
         await this.usersService.update(userId, {
           refreshToken: hashedRefreshToken,
         });
+        // console.log(await AppDataSource
+        //   .getRepository(AuthUsers)) 
     }
 
     async getTokens(userId: number, username: string) {
@@ -103,10 +106,15 @@ export class AuthUserService {
         };
     }
 
+
+    
+
     async logout(userId: number) {
         return this.usersService.update(userId, { refreshToken: null });
     }
+
     async refreshTokens(userId: number, refreshToken: string) {
+
         const user = await this.usersService.getOne(userId);
         console.log(user)
         if (!user || !user.authUser.refreshToken)
@@ -114,14 +122,12 @@ export class AuthUserService {
         const refreshTokenMatches = await argon2.verify(
           user.authUser.refreshToken,
           refreshToken,
-          
         );
         if (!refreshTokenMatches) throw new ForbiddenException('nope');
         const tokens = await this.getTokens(user.id, user.username);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
         return tokens;
       }
-
 
     create(createUserDto: AuthUserDto): Promise<AuthUsers> {
         const user = new AuthUsers();
@@ -130,11 +136,11 @@ export class AuthUserService {
         return null;
     }
  
-    async getOne(ID:number):Promise<AuthUsers>{
+    async getOne(id:number):Promise<AuthUsers>{
         return await AppDataSource
         .getRepository(AuthUsers)
         .createQueryBuilder("auth_users")
-        .where("id = :id", { id: ID })
+        .where("id = :id", { id })
         .getOne()
     
     }

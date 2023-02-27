@@ -41,7 +41,6 @@ export class UserService {
         .execute()
     }
 
-    
    async getOne(ID:number):Promise<any>{
         return await AppDataSource
         .getRepository(User)
