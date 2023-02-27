@@ -6,6 +6,8 @@ import { AuthUserService } from './auth-user.service';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
+import { Roles } from './roles.decorator';
+import { Role } from './role.enum';
 
 
 
@@ -56,5 +58,21 @@ export class AuthUserController {
     const refreshToken = req.user['refreshToken'];
     return this.authUserService.refreshTokens(userId, refreshToken);
   }
+
+  @Get("admin")
+  @Roles(Role.Admin)
+  adminTest() {
+  this.authUserService.testForAdmin();
+}
+  @Get("user")
+  @Roles(Role.User)
+  userTest() {
+  this.authUserService.testForUser();
+}
+
+  @Get("noOne")
+  noOneTest() {
+  this.authUserService.testForNoOne();
+}
 }
 

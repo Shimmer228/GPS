@@ -11,25 +11,25 @@ export class User {
     authUser: AuthUsers;
 
     @Column()
-    email: string
+    email: string;
 
     @Column()
-    phone: string 
+    phone: string; 
     
     @Column()
-    username: string 
+    username: string; 
     
     @Column()
-    country: string 
+    country: string; 
     
     @Column({default: "user"})
-    role: string
+    role: string;
     
     @Column()
-    avatar: string 
+    avatar: string; 
        
     @CreateDateColumn()
-    created_at:Date
+    created_at:Date;
 
    
 }

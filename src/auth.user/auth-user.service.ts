@@ -181,7 +181,18 @@ export class AuthUserService {
             .createQueryBuilder("user")
     }
     
+    testForAdmin(){
 
+      return "oh i see, you are admin"
+    }
+    testForUser(){
+
+      return "ordinary one, not interested"
+    }
+    testForNoOne(){
+
+      return "and who are you supposed to be"
+    }
     
 
   
