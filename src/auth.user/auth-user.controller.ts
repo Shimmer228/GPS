@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get,Param, Post, Req, UseGuards,} from '@nestjs/common';
+import { Body, Controller, Delete, Get,Param, Post, Req, SetMetadata, UseGuards,} from '@nestjs/common';
 import { AuthDto } from 'src/dto/auth.dto';
 import { Request } from 'express';
 import { CreateUserDto } from 'src/dto/create-user.dto';
@@ -6,12 +6,13 @@ import { AuthUserService } from './auth-user.service';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
-import { Roles } from './roles.decorator';
-import { Role } from './role.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+
 
 
 
 @Controller('auth')
+@UseGuards(RolesGuard)
 export class AuthUserController {
   constructor(
     readonly authUserService: AuthUserService,
@@ -52,27 +53,35 @@ export class AuthUserController {
     this.authUserService.logout(req.user['sub']);
   }
   @UseGuards(RefreshTokenGuard)
-  @Get('refresh/:id')
-  refreshTokens(@Req() req: Request,@Param('id') userId:number) {
-    //const userId = req.user['sub'];
+  @Get('refresh')
+  refreshTokens(@Req() req: Request,) {
+    const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
     return this.authUserService.refreshTokens(userId, refreshToken);
   }
 
-  @Get("admin")
-  @Roles(Role.Admin)
-  adminTest() {
-  this.authUserService.testForAdmin();
-}
-  @Get("user")
-  @Roles(Role.User)
-  userTest() {
-  this.authUserService.testForUser();
-}
+//   @Get("admin")
+//   @Roles(Role.Admin)
+//   adminTest() {
+//   this.authUserService.testForAdmin();
+// }
+//   @Get("user")
+//   @Roles(Role.User)
+//   userTest() {
+//   this.authUserService.testForUser();
+// }
 
-  @Get("noOne")
-  noOneTest() {
-  this.authUserService.testForNoOne();
+//   @Get("noOne")
+//   noOneTest() {
+//   this.authUserService.testForNoOne();
+// }
+
+
+@Get('admin')
+@SetMetadata('roles', ['admin'])
+async create() {
+  this.authUserService.testForAdmin();
+
 }
 }
 
