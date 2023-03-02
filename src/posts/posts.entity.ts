@@ -1,4 +1,4 @@
-import { User } from "src/user/user.entity";
+import { User } from "src/auth.user/user.entity";
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp, OneToOne, JoinColumn } from "typeorm"
 
 @Entity('posts')

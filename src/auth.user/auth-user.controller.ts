@@ -1,25 +1,30 @@
-import { Body, Controller, Delete, Get,Param, Post, Req, SetMetadata, UseGuards,} from '@nestjs/common';
-import { AuthDto } from 'src/dto/auth.dto';
-import { Request } from 'express';
-import { CreateUserDto } from 'src/dto/create-user.dto';
-import { AuthUserService } from './auth-user.service';
-import { UserService } from 'src/user/user.service';
-import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-
-
-
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  SetMetadata,
+  UseGuards,
+} from '@nestjs/common'
+import { AuthDto } from 'src/dto/auth.dto'
+import { Request } from 'express'
+import { CreateUserDto } from 'src/dto/create-user.dto'
+import { AuthUserService } from './auth-user.service'
+import { UserService } from 'src/auth.user/user.service'
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard'
+import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard'
+import { RolesGuard } from 'src/common/guards/roles.guard'
 
 @Controller('auth')
 @UseGuards(RolesGuard)
 export class AuthUserController {
-  constructor(
-    readonly authUserService: AuthUserService,
-  ){}
+  constructor(readonly authUserService: AuthUserService) {}
   @Get()
   Hello(): string {
-    return 'Hello world i guess xd';
+    return 'Hello world i guess xd'
   }
   // @Post()
   // creater(){
@@ -41,47 +46,44 @@ export class AuthUserController {
   // }
   @Post('signup')
   signup(@Body() createUserDto: CreateUserDto) {
-    return this.authUserService.signUp(createUserDto);
+    return this.authUserService.signUp(createUserDto)
   }
   @Post('signin')
   signin(@Body() data: AuthDto) {
-    return this.authUserService.signIn(data);
+    return this.authUserService.signIn(data)
   }
   @UseGuards(AccessTokenGuard)
   @Get('logout')
   logout(@Req() req: Request) {
-    this.authUserService.logout(req.user['sub']);
+    this.authUserService.logout(req.user['sub'])
   }
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
-  refreshTokens(@Req() req: Request,) {
-    const userId = req.user['sub'];
-    const refreshToken = req.user['refreshToken'];
-    return this.authUserService.refreshTokens(userId, refreshToken);
+  refreshTokens(@Req() req: Request) {
+    const userId = req.user['sub']
+    const refreshToken = req.user['refreshToken']
+    return this.authUserService.refreshTokens(userId, refreshToken)
   }
 
-//   @Get("admin")
-//   @Roles(Role.Admin)
-//   adminTest() {
-//   this.authUserService.testForAdmin();
-// }
-//   @Get("user")
-//   @Roles(Role.User)
-//   userTest() {
-//   this.authUserService.testForUser();
-// }
+  //   @Get("admin")
+  //   @Roles(Role.Admin)
+  //   adminTest() {
+  //   this.authUserService.testForAdmin();
+  // }
+  //   @Get("user")
+  //   @Roles(Role.User)
+  //   userTest() {
+  //   this.authUserService.testForUser();
+  // }
 
-//   @Get("noOne")
-//   noOneTest() {
-//   this.authUserService.testForNoOne();
-// }
-
-
-@Get('admin')
-@SetMetadata('roles', ['admin'])
-async create() {
-  this.authUserService.testForAdmin();
-
-}
+  //   @Get("noOne")
+  //   noOneTest() {
+  //   this.authUserService.testForNoOne();
+  // }
+  @Get('admin')
+  @SetMetadata('roles', ['admin'])
+  async create() {
+    this.authUserService.testForAdmin()
+  }
 }
 
