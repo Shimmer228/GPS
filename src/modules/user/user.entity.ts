@@ -1,4 +1,4 @@
-import { AuthUsers } from "src/auth.user/auth-user.entity"
+import { AuthUserEntity } from "src/modules/auth-user/auth-user.entity"
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn } from "typeorm"
 
 
@@ -7,8 +7,8 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(type => AuthUsers) @JoinColumn() 
-    authUser: AuthUsers;
+    @OneToOne(type => AuthUserEntity) @JoinColumn() 
+    authUser: AuthUserEntity;
 
     @Column()
     email: string;

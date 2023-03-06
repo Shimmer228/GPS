@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AppDataSource } from 'data-source';
-import { AuthUsers } from 'src/auth.user/auth-user.entity';
+import { AuthUserEntity } from 'src/modules/auth-user/auth-user.entity';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
 import { UserEntity } from './user.entity';
@@ -12,7 +12,7 @@ export class UserService {
     async create(body: CreateUserDto): Promise<any> {
 
         const authuser = await AppDataSource
-                .getRepository(AuthUsers)
+                .getRepository(AuthUserEntity)
                 .save({
                     password: body.password,
                 })
@@ -35,7 +35,7 @@ export class UserService {
                 ): Promise<void> {
         await AppDataSource
         .createQueryBuilder()
-        .update(AuthUsers)
+        .update(AuthUserEntity)
         .set({ refreshToken: updateUserDto.refreshToken })
         .where("id = :id", { id: id })
         .execute()

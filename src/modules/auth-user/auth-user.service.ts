@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { AppDataSource } from 'data-source';
 import { AuthUserDto } from './auth-user.dto/auth-user.dto';
-import { AuthUsers } from './auth-user.entity';
-import { UserEntity } from 'src/auth.user/user.entity';
-import { UserService } from 'src/auth.user/user.service';
+import { AuthUserEntity } from './auth-user.entity';
+import { UserEntity } from 'src/modules/user/user.entity';
+import { UserService } from 'src/modules/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { CreateUserDto } from 'src/dto/create-user.dto';
@@ -128,20 +128,20 @@ export class AuthUserService {
     return tokens;
   }
 
-  create(createUserDto: AuthUserDto): Promise<AuthUsers> {
-    const user = new AuthUsers();
+  create(createUserDto: AuthUserDto): Promise<AuthUserEntity> {
+    const user = new AuthUserEntity();
     user.password = createUserDto.password;
     user.refreshToken = createUserDto.refresh_token;
     return null;
   }
 
-  async getOne(id: number): Promise<AuthUsers> {
-    return await AppDataSource.getRepository(AuthUsers)
+  async getOne(id: number): Promise<AuthUserEntity> {
+    return await AppDataSource.getRepository(AuthUserEntity)
       .createQueryBuilder('auth_users')
       .where('id = :id', { id })
       .getOne();
   }
-  async findOne(username: string): Promise<AuthUsers> {
+  async findOne(username: string): Promise<AuthUserEntity> {
     const ID = (
       await AppDataSource.getRepository(UserEntity)
         .createQueryBuilder()
@@ -149,7 +149,7 @@ export class AuthUserService {
         .getOne()
     ).id;
 
-    return await AppDataSource.getRepository(AuthUsers)
+    return await AppDataSource.getRepository(AuthUserEntity)
       .createQueryBuilder()
       .where('id = :id', { id: ID })
       .getOne();
@@ -158,20 +158,20 @@ export class AuthUserService {
   async deleteOne(ID: number): Promise<void> {
     await AppDataSource.createQueryBuilder()
       .delete()
-      .from(AuthUsers)
+      .from(AuthUserEntity)
       .where('id = :id', { id: ID })
       .execute();
   }
   async redactOne(ID: number): Promise<void> {
     await AppDataSource.createQueryBuilder()
-      .update(AuthUsers)
+      .update(AuthUserEntity)
       .set({ password: '565462414' })
       .where('id = :id', { id: ID })
       .execute();
   }
   async createOne(): Promise<void> {
     const Authuser = await AppDataSource.getRepository(
-      AuthUsers,
+      AuthUserEntity,
     ).createQueryBuilder('user');
   }
 
