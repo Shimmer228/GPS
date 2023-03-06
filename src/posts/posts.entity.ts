@@ -1,4 +1,4 @@
-import { User } from "src/auth.user/user.entity";
+import { UserEntity } from "src/auth.user/user.entity";
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp, OneToOne, JoinColumn } from "typeorm"
 
 @Entity('posts')
@@ -6,9 +6,9 @@ export class Posts {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => User, { onDelete: 'CASCADE' })
+    @OneToOne(() => UserEntity, { onDelete: 'CASCADE' })
     @JoinColumn()
-    author: User;
+    author: UserEntity;
 
     @Column()
     name: string

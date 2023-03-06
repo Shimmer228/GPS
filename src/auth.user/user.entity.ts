@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, Joi
 
 
 @Entity('users')
-export class User {
+export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
 

@@ -3,7 +3,7 @@ import { UsersInfo1676286285196 } from "migrations/1676286285196-UsersInfo";
 import { Posts1676286296829 } from "migrations/1676286296829-Posts";
 import "reflect-metadata"
 import { AuthUsers } from "src/auth.user/auth-user.entity";
-import { User } from "src/auth.user/user.entity";
+import { UserEntity } from "src/auth.user/user.entity";
 import { DataSource } from "typeorm"
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -20,7 +20,7 @@ export const AppDataSource = new DataSource({
     synchronize: false,
     migrationsRun: false,
     name: 'default',
-    entities: [AuthUsers,User],
+    entities: [AuthUsers,UserEntity],
     migrations: [AuthUser1676286259930,UsersInfo1676286285196,Posts1676286296829],
 });
 

@@ -3,7 +3,7 @@ import { AppDataSource } from 'data-source';
 import { AuthUsers } from 'src/auth.user/auth-user.entity';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UserService {
             console.log(authuser);
 
         const user =  await AppDataSource
-                .getRepository(User)
+                .getRepository(UserEntity)
                 .save({
                     authUser:authuser,
                     username:body.username,
@@ -43,7 +43,7 @@ export class UserService {
 
    async getOne(ID:number):Promise<any>{
         return await AppDataSource
-        .getRepository(User)
+        .getRepository(UserEntity)
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.authUser", "authUser")
         .where("user.id = :id", { id: ID })
@@ -52,7 +52,7 @@ export class UserService {
     }
     async findByUsername(username: string): Promise<any> {
         return await AppDataSource
-        .getRepository(User)
+        .getRepository(UserEntity)
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.authUser", "authUser")
         .where("user.username = :username", { username: username })
@@ -62,7 +62,7 @@ export class UserService {
        await AppDataSource
         .createQueryBuilder()
         .delete()
-        .from(User)
+        .from(UserEntity)
         .where("id = :id", { id: ID })
         .execute()
 
@@ -70,7 +70,7 @@ export class UserService {
     async redactOne(ID:number):Promise<void>{
      await AppDataSource
         .createQueryBuilder()
-        .update(User)
+        .update(UserEntity)
         .set({ password : "565462414"})
         .where("id = :id", { id: ID })
         .execute()

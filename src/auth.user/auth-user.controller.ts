@@ -13,13 +13,12 @@ import { AuthDto } from 'src/dto/auth.dto'
 import { Request } from 'express'
 import { CreateUserDto } from 'src/dto/create-user.dto'
 import { AuthUserService } from './auth-user.service'
-import { UserService } from 'src/auth.user/user.service'
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard'
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard'
 import { RolesGuard } from 'src/common/guards/roles.guard'
+import { Roles } from './roles.decorator'
 
 @Controller('auth')
-@UseGuards(RolesGuard)
 export class AuthUserController {
   constructor(readonly authUserService: AuthUserService) {}
   @Get()
@@ -64,7 +63,6 @@ export class AuthUserController {
     const refreshToken = req.user['refreshToken']
     return this.authUserService.refreshTokens(userId, refreshToken)
   }
-
   //   @Get("admin")
   //   @Roles(Role.Admin)
   //   adminTest() {
@@ -80,8 +78,10 @@ export class AuthUserController {
   //   noOneTest() {
   //   this.authUserService.testForNoOne();
   // }
+
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Get('admin')
-  @SetMetadata('roles', ['admin'])
+  @Roles('admin')
   async create() {
     this.authUserService.testForAdmin()
   }

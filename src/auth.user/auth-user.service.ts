@@ -6,7 +6,7 @@ import {
 import { AppDataSource } from 'data-source';
 import { AuthUserDto } from './auth-user.dto/auth-user.dto';
 import { AuthUsers } from './auth-user.entity';
-import { User } from 'src/auth.user/user.entity';
+import { UserEntity } from 'src/auth.user/user.entity';
 import { UserService } from 'src/auth.user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
@@ -34,12 +34,12 @@ export class AuthUserService {
 
     // Hash password
     const hash = await this.hashData(createUserDto.password);
-    const newUser = await this.usersService.create({
+    const newUser:UserEntity = await this.usersService.create({
       ...createUserDto,
       password: hash,
     });
     console.log('i am at 2');
-    const tokens = await this.getTokens(newUser.id, newUser.username);
+    const tokens = await this.getTokens(newUser.id, newUser.username, newUser.role);
     console.log('i am at 3');
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
     console.log('i am at 4');
@@ -53,7 +53,7 @@ export class AuthUserService {
 
   async signIn(data: AuthDto) {
     // Check if user exists
-    const user = await this.usersService.findByUsername(data.username);
+    const user: UserEntity = await this.usersService.findByUsername(data.username);
     if (!user) throw new BadRequestException('User does not exist');
     const passwordMatches = await argon2.verify(
       user.authUser.password,
@@ -62,7 +62,7 @@ export class AuthUserService {
 
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
-    const tokens = await this.getTokens(user.id, user.username);
+    const tokens = await this.getTokens(user.id, user.username, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -77,12 +77,13 @@ export class AuthUserService {
     //   .getRepository(AuthUsers))
   }
 
-  async getTokens(userId: number, username: string) {
+  async getTokens(userId: number, username: string, userRole: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: userId,
           username,
+          userRole,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -122,7 +123,7 @@ export class AuthUserService {
       refreshToken,
     );
     if (!refreshTokenMatches) throw new ForbiddenException('nope');
-    const tokens = await this.getTokens(user.id, user.username);
+    const tokens = await this.getTokens(user.id, user.username, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -142,7 +143,7 @@ export class AuthUserService {
   }
   async findOne(username: string): Promise<AuthUsers> {
     const ID = (
-      await AppDataSource.getRepository(User)
+      await AppDataSource.getRepository(UserEntity)
         .createQueryBuilder()
         .where('username = :username', { username: username })
         .getOne()
