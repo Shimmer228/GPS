@@ -27,7 +27,6 @@ export class AuthUserService {
     const userExists = await this.usersService.findByUsername(
       createUserDto.username,
     );
-    console.log('i am at 1');
     if (userExists) {
       throw new BadRequestException('User already exists');
     }
@@ -38,11 +37,8 @@ export class AuthUserService {
       ...createUserDto,
       password: hash,
     });
-    console.log('i am at 2');
     const tokens = await this.getTokens(newUser.id, newUser.username, newUser.role);
-    console.log('i am at 3');
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
-    console.log('i am at 4');
     return tokens;
   }
 
